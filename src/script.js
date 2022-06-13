@@ -22,7 +22,7 @@ const mercurytexture = new Three.TextureLoader().load('/textures/plants/mercury.
 /// debug
  const gui=new dat.GUI({closed:true})
  const p={
-  radius:2
+  radius:1000
 }
 
 // const parematers ={
@@ -38,7 +38,6 @@ const mercurytexture = new Three.TextureLoader().load('/textures/plants/mercury.
 //   }
 // }
 
-////
 
 // cursor
 // const cursor ={
@@ -54,15 +53,13 @@ const canvas = document.querySelector('.webgl')
 
 // })
 
-
 /// scene
 const scene = new Three.Scene()
-
 
 /**
  * models
  */
- const glftLoader = new GLTFLoader()
+/* const glftLoader = new GLTFLoader()
  let obj;
  glftLoader.load(
      '/models/satellite/scene.gltf',
@@ -72,7 +69,7 @@ const scene = new Three.Scene()
         // console.log(obj.position);
          scene.add(glft.scene);
      }
- )
+ )*/
 //  var light = new THREE.HemisphereLight(0xffffff,0x000000,10)
 //  scene.add(light)
 // console.log(obj.position);
@@ -93,24 +90,13 @@ const material4 = new Three.MeshStandardMaterial({
 const Group = new Three.Group()
 
 
-//////sun
+//sun
 const sun = new Three.Mesh(new Three.SphereBufferGeometry(p.radius, 64, 32, 6.283, 6.283, 0, 6.2831), material1)
 ////////////
 
-////planets
-const plan = new Three.Mesh(new Three.SphereBufferGeometry(0.8, 64, 32, 6.283, 6.283, 0, 6.2831), material4)
+//planets
+const plan = new Three.Mesh(new Three.SphereBufferGeometry(500, 64, 32, 6.283, 6.283, 0, 6.2831), material4)
 
-const plan1 = new Three.Mesh(new Three.SphereBufferGeometry(0.8, 64, 32, 6.283, 6.283, 0, 6.2831), material3)
-const plan2 = new Three.Mesh(new Three.SphereBufferGeometry(0.8, 64, 32, 6.283, 6.283, 0, 6.2831), material2)
-//////////////
-
-// planet
-const earthMass = 5.97e24;
-const planet = new Planet(1, earthMass, new Three.Vector3(0, 0, 0), new Three.Vector3(0, 0, 0));
-
-
-// another planet
-const planet2 = new Planet(1, 6500, new Three.Vector3(-6771, 0, 0), new Three.Vector3(0, -242547.281,0));
 
 ///orbit
 
@@ -122,17 +108,14 @@ const orbit2 = new Three.Mesh(new Three.TorusGeometry(14, 0.005, 2, 200, 6.2831)
 
 Group.add(orbit2, orbit1, orbit)
 Group.rotation.x = 90
-
-
-
-
-plan.position.x = -7
+plan.position.x = 6771
 plan1.position.x = -11.5
 plan2.position.x = -17
 orbit.position.x = -1
 orbit1.position.x = -1.5
 orbit2.position.x = -3
 scene.add(sun)
+scene.add(plan)
 
 // debug
 // gui.addColor(parematers,'color').onChange(()=>{
@@ -141,13 +124,10 @@ scene.add(sun)
 // // gui.add(sphere.position,'y',-3,3,0.01).name('cube y')
 // gui.add()
 
-
-
-
-
 gui.add(p,'radius',-1,2,0.1).name('radius').onChange(()=>{
       
     })
+
 // gui.add(sun.position,'x',-3,3,0.01).name('cube x')
 // // gui.add(sphere.position,'z',-3,3,0.01).name('cube z')
 // gui.add(material ,'visible')
@@ -155,8 +135,6 @@ gui.add(p,'radius',-1,2,0.1).name('radius').onChange(()=>{
 // gui.add(parematers,'rotatex')
 // gui.add(parematers,'rotatey')
 // gui.add(parematers,'rotatez')
-
-
 
 /// light 
 const ambientlight = new Three.AmbientLight(0xffffff, 0.5)
@@ -194,20 +172,27 @@ window.addEventListener('dblclick', () => {
 })
 
 /// camera
-const camera = new Three.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.z = 3
-
-// camera.lookAt(sphere.position)
-
-
-
+const camera = new Three.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 10000000)
+camera.position.z = 100000
 
 scene.add(camera)
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
+// planet
+const small = 1e-8;
+const earthMass = 5.98e21;
+const moonMass = 6500;
+const dist = 42650;
+const G = 6.67e-11;
+const speed = Math.sqrt(G*earthMass/dist)
+console.log(speed)
+const planet = new Planet(1, earthMass, new Three.Vector3(0, 0, 0), new Three.Vector3(0, 0, 0));
 
-/// renderer
+// another planet
+const planet2 = new Planet(1, moonMass, new Three.Vector3(dist, 0, 0), new Three.Vector3(0, speed,0));
+
+// renderer
 const renderer = new Three.WebGLRenderer({
   canvas: canvas
 })
@@ -216,18 +201,30 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 const clock = new Three.Clock()
 const tick = () => {
-  const elapsedtime = clock.getElapsedTime()
+  //const elapsedtime = clock.getElapsedTime()
   const deltaTime=clock.getDelta()
-  sun.rotation.y = elapsedtime
-  planet2.updatePosition(deltaTime,planet)
-  // console.log(obj.position.x);
-  
-  // console.log(planet2.position.x);
-  // obj.position.x=planet2.position.x
-  // obj.position.y=planet2.position.y
+  //sun.rotation.y = elapsedtime
+  let p1 = new Three.Vector3(plan.position.x, plan.position.y, plan.position.z);
+  planet2.updatePosition(deltaTime*2,planet)
+  plan.position.set(planet2.position.x,planet2.position.y,planet2.position.z)
+  let p2 = new Three.Vector3(plan.position.x, plan.position.y, plan.position.z);
+  //draw line
+  const geometry = new Three.Geometry()
+  geometry.vertices.push(p1)
+  geometry.vertices.push(p2)
+  const material = new Three.LineBasicMaterial({
+    color: 0xffffff
+  })
+  const line = new Three.Line(geometry, material)
+  scene.add(line)
+  setTimeout(() => {
+    scene.remove(line)
+  }
+    , 40000);
+
 
  
-   controls.update()
+  controls.update()
   //renderer
   renderer.render(scene, camera)
   window.requestAnimationFrame(tick)

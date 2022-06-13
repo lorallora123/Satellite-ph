@@ -3,7 +3,7 @@ import { AnimationBlendMode, CompressedTextureLoader } from 'three'
 
 class Planet extends THREE.Mesh {
     // gravity constant
-    G = 6.67e-19;
+    G = 6.673e-11;
     // radius of the planet
     radius = 0
     // mass of the planet
@@ -31,11 +31,7 @@ class Planet extends THREE.Mesh {
         let rLength2 = rLength * rLength
         let force = this.G * other.mass * this.mass / rLength2
         let th = Math.atan2((this.position.y - other.position.y) ,(this.position.x - other.position.x))
-        //if(this.position.x<other.position.x || this.position.y<other.position.y)th+=Math.PI
         let forceVec = new THREE.Vector3(-force*Math.cos(th),-force*Math.sin(th),0);
-        //console.log(forceVec);
-        //console.log(th)
-        
         return forceVec
     }
     // calculate the acceleration of the planet
@@ -46,12 +42,12 @@ class Planet extends THREE.Mesh {
         return new THREE.Vector3(accX,accY,0);
     }
     // update the position of the planet
-    updatePosition(deltaTime, other) {            ////USE THIS
+    updatePosition(deltaTime, other) {            //USE THIS
         this.acceleration = this.calculateAcceleration(other,deltaTime)
         this.velocity.x+= this.acceleration.x*deltaTime
         this.velocity.y+= this.acceleration.y*deltaTime
         this.velocity.z =0
-        console.log(this.velocity)
+        //console.log(this.velocity.length())
         this.position.x+= this.velocity.x*deltaTime
         this.position.y+= this.velocity.y*deltaTime
         this.position.z =0
