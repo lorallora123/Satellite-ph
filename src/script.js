@@ -109,8 +109,7 @@ const orbit2 = new Three.Mesh(new Three.TorusGeometry(14, 0.005, 2, 200, 6.2831)
 Group.add(orbit2, orbit1, orbit)
 Group.rotation.x = 90
 plan.position.x = 6771
-plan1.position.x = -11.5
-plan2.position.x = -17
+
 orbit.position.x = -1
 orbit1.position.x = -1.5
 orbit2.position.x = -3
