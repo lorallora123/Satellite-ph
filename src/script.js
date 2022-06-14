@@ -12,7 +12,7 @@ import * as dat from 'dat.gui'
  * texture
  */
 const suntexture = new Three.TextureLoader().load('/textures/plants/sun.jpg')
-const earthtexture = new Three.TextureLoader().load('/textures/plants/earth.jpg')
+const earthtexture = new Three.TextureLoader().load('/textures/plants/download.jfif')
 const marstexture = new Three.TextureLoader().load('/textures/plants/mars.jpg')
 const mercurytexture = new Three.TextureLoader().load('/textures/plants/mercury.jpg')
 
@@ -70,10 +70,7 @@ const scene = new Three.Scene()
          scene.add(glft.scene);
      }
  )*/
-//  var light = new THREE.HemisphereLight(0xffffff,0x000000,10)
-//  scene.add(light)
-// console.log(obj.position);
-//scene.background= new THREE.Color(0xff0000)
+
 
 const material1 = new Three.MeshStandardMaterial({
   map: earthtexture
@@ -87,7 +84,7 @@ const material3 = new Three.MeshStandardMaterial({
 const material4 = new Three.MeshStandardMaterial({
   map: mercurytexture
 })
-const Group = new Three.Group()
+
 
 
 //sun
@@ -98,42 +95,33 @@ const sun = new Three.Mesh(new Three.SphereBufferGeometry(p.radius, 64, 32, 6.28
 const plan = new Three.Mesh(new Three.SphereBufferGeometry(500, 64, 32, 6.283, 6.283, 0, 6.2831), material4)
 
 
-///orbit
 
-const orbit = new Three.Mesh(new Three.TorusGeometry(6, 0.005, 2, 200, 6.2831), new Three.MeshStandardMaterial())
-const orbit1 = new Three.Mesh(new Three.TorusGeometry(10, 0.005, 2, 200, 6.2831), new Three.MeshStandardMaterial())
 
-const orbit2 = new Three.Mesh(new Three.TorusGeometry(14, 0.005, 2, 200, 6.2831), new Three.MeshStandardMaterial())
-///////////////
 
-Group.add(orbit2, orbit1, orbit)
-Group.rotation.x = 90
-plan.position.x = 6771
 
-orbit.position.x = -1
-orbit1.position.x = -1.5
-orbit2.position.x = -3
+plan.position.x = 7771
+
+
 scene.add(sun)
 scene.add(plan)
+const parematers={
+  masssatellite:6500,
+  massplanet:5.98e24,
+  distance:7771,
+  force:0,
 
-// debug
-// gui.addColor(parematers,'color').onChange(()=>{
-//   material.color.set(parematers.color)
-//   })
+}
+
+
 // // gui.add(sphere.position,'y',-3,3,0.01).name('cube y')
-// gui.add()
+gui.add(parematers,'masssatellite').name('mass satellite :');
+gui.add(parematers,'massplanet').name('mass planet :');
+gui.add(parematers,'distance').name('distance :');
+gui.add(parematers,'force').name('force :');
 
-gui.add(p,'radius',-1,2,0.1).name('radius').onChange(()=>{
-      
-    })
 
-// gui.add(sun.position,'x',-3,3,0.01).name('cube x')
-// // gui.add(sphere.position,'z',-3,3,0.01).name('cube z')
-// gui.add(material ,'visible')
-// gui.add(material,'wireframe')
-// gui.add(parematers,'rotatex')
-// gui.add(parematers,'rotatey')
-// gui.add(parematers,'rotatez')
+
+
 
 /// light 
 const ambientlight = new Three.AmbientLight(0xffffff, 0.5)
@@ -182,7 +170,7 @@ controls.enableDamping = true
 const small = 1e-8;
 const earthMass = 5.98e21;
 const moonMass = 6500;
-const dist = 42650;
+const dist = 7771;
 const G = 6.67e-11;
 const speed = Math.sqrt(G*earthMass/dist)
 console.log(speed)
@@ -200,11 +188,15 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 const clock = new Three.Clock()
 const tick = () => {
-  //const elapsedtime = clock.getElapsedTime()
   const deltaTime=clock.getDelta()
   //sun.rotation.y = elapsedtime
   let p1 = new Three.Vector3(plan.position.x, plan.position.y, plan.position.z);
-  planet2.updatePosition(deltaTime*2,planet)
+  planet2.updatePosition(deltaTime*2,planet,parematers.force)
+  planet.changeMass(parematers.massplanet/1000);
+  planet2.changeMass(parematers.masssatellite);
+  planet2.changeRadius(parematers.distance,planet);
+  //planet2.changeForce(parematers.force,deltaTime,planet)
+    
   plan.position.set(planet2.position.x,planet2.position.y,planet2.position.z)
   let p2 = new Three.Vector3(plan.position.x, plan.position.y, plan.position.z);
   //draw line
@@ -220,7 +212,7 @@ const tick = () => {
     scene.remove(line)
   }
     , 40000);
-
+  
 
  
   controls.update()
