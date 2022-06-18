@@ -56,20 +56,11 @@ const canvas = document.querySelector('.webgl')
 /// scene
 const scene = new Three.Scene()
 
-/**
- * models
- */
-/* const glftLoader = new GLTFLoader()
- let obj;
- glftLoader.load(
-     '/models/satellite/scene.gltf',
-     (glft)=>{
-         obj=glft.scene;
-        //  obj.position.x=-5
-        // console.log(obj.position);
-         scene.add(glft.scene);
-     }
- )*/
+//background
+const loader = new Three.TextureLoader()
+const pic= loader.load('/textures/plants/stars.jpg')
+scene.background=pic
+
 
 
 const material1 = new Three.MeshStandardMaterial({
@@ -185,7 +176,21 @@ const renderer = new Three.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
+/**
+ * models
+ */
+//  const glftLoader = new GLTFLoader()
+//  let obj;
+//    glftLoader.load(
+//     '/models/satellite/scene.gltf',
+//     (glft)=>{
+//         obj=glft.scene;
+//        obj.position.x=-5
+//        // console.log(obj.position);
+//         scene.add(glft.scene);
+//     }
+// )
+ 
 const clock = new Three.Clock()
 const tick = () => {
   const deltaTime=clock.getDelta()
@@ -212,9 +217,6 @@ const tick = () => {
     scene.remove(line)
   }
     , 40000);
-  
-
- 
   controls.update()
   //renderer
   renderer.render(scene, camera)
