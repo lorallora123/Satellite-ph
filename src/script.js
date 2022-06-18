@@ -12,7 +12,7 @@ import * as dat from 'dat.gui'
  * texture
  */
 const suntexture = new Three.TextureLoader().load('/textures/plants/sun.jpg')
-const earthtexture = new Three.TextureLoader().load('/textures/plants/download.jfif')
+//const earthtexture = new Three.TextureLoader().load('/textures/plants/earth.jpg')
 const marstexture = new Three.TextureLoader().load('/textures/plants/mars.jpg')
 const mercurytexture = new Three.TextureLoader().load('/textures/plants/mercury.jpg')
 
@@ -57,21 +57,37 @@ const canvas = document.querySelector('.webgl')
 const scene = new Three.Scene()
 
 //background
-const loader = new Three.TextureLoader()
-const pic= loader.load('/textures/plants/stars.jpg')
+const loader = new Three.CubeTextureLoader()
+const pic= loader.load([
+  '/textures/plants/stars.jpg',
+  '/textures/plants/stars.jpg',
+  '/textures/plants/stars.jpg',
+  '/textures/plants/stars.jpg',
+  '/textures/plants/stars.jpg',
+  '/textures/plants/stars.jpg'
+])
 scene.background=pic
 
+// to draw earth 
+const geo1= new Three.SphereBufferGeometry(p.radius, 64, 32, 6.283, 6.283, 0, 6.2831)
 
+const material1 = new Three.MeshPhongMaterial({
+     map: Three.ImageUtils.loadTexture('/textures/plants/earth.jpg'),
+     opacity     : 0.8
+   })
 
-const material1 = new Three.MeshStandardMaterial({
-  map: earthtexture
-})
-const material2 = new Three.MeshStandardMaterial({
-  map: earthtexture
-})
-const material3 = new Three.MeshStandardMaterial({
-  map: marstexture
-})
+    material1.bumpMap = Three.ImageUtils.loadTexture('/textures/plants/earthbump1k.jpg')
+    material1.bumpScale = 0.05
+
+    material1.specularMap = Three.ImageUtils.loadTexture('/textures/plants/earthspec1k.jpg')
+    material1.specular= new Three.Color('grey') 
+
+// const material2 = new Three.MeshStandardMaterial({
+//   map: earthtexture
+// })
+// const material3 = new Three.MeshStandardMaterial({
+//   map: marstexture
+// })
 const material4 = new Three.MeshStandardMaterial({
   map: mercurytexture
 })
@@ -79,16 +95,9 @@ const material4 = new Three.MeshStandardMaterial({
 
 
 //sun
-const sun = new Three.Mesh(new Three.SphereBufferGeometry(p.radius, 64, 32, 6.283, 6.283, 0, 6.2831), material1)
-////////////
-
+const sun = new Three.Mesh(geo1, material1)
 //planets
 const plan = new Three.Mesh(new Three.SphereBufferGeometry(500, 64, 32, 6.283, 6.283, 0, 6.2831), material4)
-
-
-
-
-
 
 plan.position.x = 7771
 
@@ -109,9 +118,6 @@ gui.add(parematers,'masssatellite').name('mass satellite :');
 gui.add(parematers,'massplanet').name('mass planet :');
 gui.add(parematers,'distance').name('distance :');
 gui.add(parematers,'force').name('force :');
-
-
-
 
 
 /// light 
