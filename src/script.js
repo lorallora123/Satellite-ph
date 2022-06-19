@@ -12,11 +12,11 @@ import * as dat from 'dat.gui'
  * texture
  */
 const suntexture = new Three.TextureLoader().load('/textures/plants/sun.jpg')
-//const earthtexture = new Three.TextureLoader().load('/textures/plants/earth.jpg')
+
 const marstexture = new Three.TextureLoader().load('/textures/plants/mars.jpg')
 const mercurytexture = new Three.TextureLoader().load('/textures/plants/mercury.jpg')
 
-//const starsexture = new Three.TextureLoader().load('/textures/plants/stars.jpg')
+
 
 
 /// debug
@@ -25,33 +25,13 @@ const mercurytexture = new Three.TextureLoader().load('/textures/plants/mercury.
   radius:1000
 }
 
-// const parematers ={
-//   color: 0xffd0a0,
-//   rotatex:()=>{
-//     gsap.to(sphere.rotation,{duration:2,x:sphere.rotation.x+10})
-//   },
-//   rotatey:()=>{
-//     gsap.to(sphere.rotation,{duration:2,y:sphere.rotation.y+10})
-//   },
-//   rotatez:()=>{
-//     gsap.to(sphere.rotation,{duration:2,z:sphere.rotation.z+10})
-//   }
-// }
 
 
-// cursor
-// const cursor ={
-//   x:0,
-//   y:0
-// }
+
 /// canvas
 const canvas = document.querySelector('.webgl')
 
-// window.addEventListener('mousemove',(event)=> {
-//   cursor.x=event.clientX /sizes.width -0.5
-//   cursor.y= - (event.clientY /sizes.height -0.5)
 
-// })
 
 /// scene
 const scene = new Three.Scene()
@@ -72,17 +52,18 @@ scene.background=pic
 ///////////////////////////////////////
 
 //Create a new ambient light
-var light11 = new Three.AmbientLight( 0x888888 )
+var light11 = new Three.AmbientLight( 0xffffff)
 scene.add( light11 )
 
-//Create a new directional light
-var light11 = new Three.DirectionalLight( 0xfdfcf0, 1 )
-light11.position.set(20,10,20)
-scene.add( light11 )
+///////////////
+const light = new Three.DirectionalLight(0x999999,5);
+scene.add(light);
+/////////
+
 //////////////////////////////////
 
 // to draw earth 
-const geomet = new Three.SphereBufferGeometry(p.radius, 32,32)
+const geomet = new Three.SphereBufferGeometry(2000, 32,32)
 const mater = new Three.MeshPhongMaterial({
   map: Three.ImageUtils.loadTexture('/textures/plants/earth.jpg'),
 })
@@ -93,41 +74,32 @@ const mater = new Three.MeshPhongMaterial({
 mater.specularMap = Three.ImageUtils.loadTexture('/textures/plants/earthspec1k.jpg')
 mater.specular= new Three.Color(0x888888)
 
-//old, is not working
-// const geo1= new Three.SphereBufferGeometry(p.radius, 64, 32, 6.283, 6.283, 0, 6.2831)
 
-// const material1 = new Three.MeshPhongMaterial({
-//      map: Three.ImageUtils.loadTexture('/textures/plants/earth.jpg'),
-//      opacity     : 0.8
-//    })
-
-    // material1.bumpMap = Three.ImageUtils.loadTexture('/textures/plants/earthbump1k.jpg')
-    // material1.bumpScale = 0.05
-
-    // material1.specularMap = Three.ImageUtils.loadTexture('/textures/plants/earthspec1k.jpg')
-    // material1.specular= new Three.Color('grey') 
-
-// const material2 = new Three.MeshStandardMaterial({
-//   map: earthtexture
-// })
-// const material3 = new Three.MeshStandardMaterial({
-//   map: marstexture
-// })
 const material4 = new Three.MeshStandardMaterial({
   map: mercurytexture
 })
 
-//const earthMesh= new Three.Mesh(geo1,material1)
+/// models
+ 
+ const obj = new Three.Object3D();
+ const glftloader = new GLTFLoader();
+ glftloader.load('./models/satellite/scene.gltf',function(gltf) {
+     const model = gltf.scene;
+     obj.add(model);
+  
+     obj.scale.set(250,250,250)
+     obj.rotation.x += 200
+     scene.add(obj);
+ }
+)
 
-//sun
-//const sun = new Three.Mesh(geo1, material1)
-//planets
-const plan = new Three.Mesh(new Three.SphereBufferGeometry(500, 64, 32, 6.283, 6.283, 0, 6.2831), material4)
 
-plan.position.x = 7771
+
+
+obj.position.x = 7771
 
 scene.add(earthMM)
-scene.add(plan)
+scene.add(obj)
 const parematers={
   masssatellite:6500,
   massplanet:5.98e24,
@@ -136,21 +108,15 @@ const parematers={
 }
 
 
-// // gui.add(sphere.position,'y',-3,3,0.01).name('cube y')
+
 gui.add(parematers,'masssatellite').name('mass satellite :');
 gui.add(parematers,'massplanet').name('mass planet :');
 gui.add(parematers,'distance').name('distance :');
 gui.add(parematers,'force').name('force :');
 
 
-/// light 
-const ambientlight = new Three.AmbientLight(0xffffff, 0.5)
-scene.add(ambientlight)
-const pointlight = new Three.PointLight(0xffffff, 0.5)
-pointlight.position.x = 2
-pointlight.position.y = 3
-pointlight.position.z = 4
-scene.add(pointlight)
+
+
 
 /// size
 const sizes = {
@@ -180,7 +146,7 @@ window.addEventListener('dblclick', () => {
 
 /// camera
 const camera = new Three.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 10000000)
-camera.position.z = 100000
+camera.position.z = 30000
 
 scene.add(camera)
 const controls = new OrbitControls(camera, canvas)
@@ -205,35 +171,22 @@ const renderer = new Three.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-/**
- * models
- */
-//  const glftLoader = new GLTFLoader()
-//  let obj;
-//    glftLoader.load(
-//     '/models/satellite/scene.gltf',
-//     (glft)=>{
-//         obj=glft.scene;
-//        obj.position.x=-5
-//        // console.log(obj.position);
-//         scene.add(glft.scene);
-//     }
-// )
+
  
 const clock = new Three.Clock()
 const tick = () => {
   const deltaTime=clock.getDelta()
   //sun.rotation.y = elapsedtime
   earthMM.rotation.y += 0.01
-  let p1 = new Three.Vector3(plan.position.x, plan.position.y, plan.position.z);
+  let p1 = new Three.Vector3(obj.position.x, obj.position.y, obj.position.z);
   planet2.updatePosition(deltaTime*2,planet,parematers.force)
   planet.changeMass(parematers.massplanet/1000);
   planet2.changeMass(parematers.masssatellite);
   planet2.changeRadius(parematers.distance,planet);
   //planet2.changeForce(parematers.force,deltaTime,planet)
     
-  plan.position.set(planet2.position.x,planet2.position.y,planet2.position.z)
-  let p2 = new Three.Vector3(plan.position.x, plan.position.y, plan.position.z);
+  obj.position.set(planet2.position.x,planet2.position.y,planet2.position.z)
+  let p2 = new Three.Vector3(obj.position.x, obj.position.y, obj.position.z);
   //draw line
   const geometry = new Three.Geometry()
   geometry.vertices.push(p1)

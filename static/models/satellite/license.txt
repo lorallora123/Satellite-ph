@@ -1,11 +1,11 @@
 Model Information:
-* title:	Satellite
-* source:	https://sketchfab.com/3d-models/satellite-f8bd72434281441db77e85ce830f89c1
-* author:	Phobos (https://sketchfab.com/1majaxed)
+* title:	Meteor-M2 No.2
+* source:	https://sketchfab.com/3d-models/meteor-m2-no2-7463bc7831ff4166b9aa781427237e8b
+* author:	tashtego (https://sketchfab.com/tashtego)
 
 Model License:
-* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
-* requirements:	Author must be credited. Commercial use is allowed.
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
 
 If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
-This work is based on "Satellite" (https://sketchfab.com/3d-models/satellite-f8bd72434281441db77e85ce830f89c1) by Phobos (https://sketchfab.com/1majaxed) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+This work is based on "Meteor-M2 No.2" (https://sketchfab.com/3d-models/meteor-m2-no2-7463bc7831ff4166b9aa781427237e8b) by tashtego (https://sketchfab.com/tashtego) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
