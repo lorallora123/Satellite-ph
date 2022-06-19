@@ -55,6 +55,7 @@ const canvas = document.querySelector('.webgl')
 
 /// scene
 const scene = new Three.Scene()
+/////////////////////////////////////////////////
 
 //background
 const loader = new Three.CubeTextureLoader()
@@ -67,20 +68,44 @@ const pic= loader.load([
   '/textures/plants/stars.jpg'
 ])
 scene.background=pic
+ 
+///////////////////////////////////////
+
+//Create a new ambient light
+var light11 = new Three.AmbientLight( 0x888888 )
+scene.add( light11 )
+
+//Create a new directional light
+var light11 = new Three.DirectionalLight( 0xfdfcf0, 1 )
+light11.position.set(20,10,20)
+scene.add( light11 )
+//////////////////////////////////
 
 // to draw earth 
-const geo1= new Three.SphereBufferGeometry(p.radius, 64, 32, 6.283, 6.283, 0, 6.2831)
+const geomet = new Three.SphereBufferGeometry(p.radius, 32,32)
+const mater = new Three.MeshPhongMaterial({
+  map: Three.ImageUtils.loadTexture('/textures/plants/earth.jpg'),
+})
+ const earthMM = new Three.Mesh(geomet , mater)
+ mater.bumpMap = Three.ImageUtils.loadTexture('/textures/plants/earthbump1k.jpg')
+ mater.bumpScale = 0.010
 
-const material1 = new Three.MeshPhongMaterial({
-     map: Three.ImageUtils.loadTexture('/textures/plants/earth.jpg'),
-     opacity     : 0.8
-   })
+mater.specularMap = Three.ImageUtils.loadTexture('/textures/plants/earthspec1k.jpg')
+mater.specular= new Three.Color(0x888888)
 
-    material1.bumpMap = Three.ImageUtils.loadTexture('/textures/plants/earthbump1k.jpg')
-    material1.bumpScale = 0.05
+//old, is not working
+// const geo1= new Three.SphereBufferGeometry(p.radius, 64, 32, 6.283, 6.283, 0, 6.2831)
 
-    material1.specularMap = Three.ImageUtils.loadTexture('/textures/plants/earthspec1k.jpg')
-    material1.specular= new Three.Color('grey') 
+// const material1 = new Three.MeshPhongMaterial({
+//      map: Three.ImageUtils.loadTexture('/textures/plants/earth.jpg'),
+//      opacity     : 0.8
+//    })
+
+    // material1.bumpMap = Three.ImageUtils.loadTexture('/textures/plants/earthbump1k.jpg')
+    // material1.bumpScale = 0.05
+
+    // material1.specularMap = Three.ImageUtils.loadTexture('/textures/plants/earthspec1k.jpg')
+    // material1.specular= new Three.Color('grey') 
 
 // const material2 = new Three.MeshStandardMaterial({
 //   map: earthtexture
@@ -92,24 +117,22 @@ const material4 = new Three.MeshStandardMaterial({
   map: mercurytexture
 })
 
-
+//const earthMesh= new Three.Mesh(geo1,material1)
 
 //sun
-const sun = new Three.Mesh(geo1, material1)
+//const sun = new Three.Mesh(geo1, material1)
 //planets
 const plan = new Three.Mesh(new Three.SphereBufferGeometry(500, 64, 32, 6.283, 6.283, 0, 6.2831), material4)
 
 plan.position.x = 7771
 
-
-scene.add(sun)
+scene.add(earthMM)
 scene.add(plan)
 const parematers={
   masssatellite:6500,
   massplanet:5.98e24,
   distance:7771,
   force:0,
-
 }
 
 
@@ -201,6 +224,7 @@ const clock = new Three.Clock()
 const tick = () => {
   const deltaTime=clock.getDelta()
   //sun.rotation.y = elapsedtime
+  earthMM.rotation.y += 0.01
   let p1 = new Three.Vector3(plan.position.x, plan.position.y, plan.position.z);
   planet2.updatePosition(deltaTime*2,planet,parematers.force)
   planet.changeMass(parematers.massplanet/1000);
