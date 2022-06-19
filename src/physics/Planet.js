@@ -16,6 +16,9 @@ class Planet extends THREE.Mesh {
     acceleration = new THREE.Vector3(0, 0, 0)
     // force of the planet
     force = new THREE.Vector3(0, 0, 0)
+
+    newDistance=0;
+
     // constructor
     constructor(radius, mass, position, velocity ) {
         super()
@@ -24,15 +27,29 @@ class Planet extends THREE.Mesh {
         this.position = position
         this.velocity = velocity
     }
+
+    engines(other){
+        let rLength = Math.sqrt( (this.position.y-other.position.y)*(this.position.y-other.position.y) + (this.position.x-other.position.x)*(this.position.x-other.position.x) )
+        let vc = Math.sqrt(this.G * other.mass / rLength);
+        let a = (rLength + this.newDistance+6371)/2;
+        let ve = Math.sqrt(this.G * other.mass * ((2/rLength)-(1/a)));
+        let dv = Math.abs(ve - vc);
+        let force = this.mass * dv * dv / rLength;
+        this.newDistance=0;
+        return force; 
+    }
     
     // calculate the force of the planet
-    calculateForce(other,anotherForce) {
+    calculateForce(other) {
         let rLength = Math.sqrt( (this.position.y-other.position.y)*(this.position.y-other.position.y) + (this.position.x-other.position.x)*(this.position.x-other.position.x) )
         let rLength2 = rLength * rLength
-        let force = (this.G * other.mass * this.mass / rLength2) + anotherForce
+        let force = -(this.G * other.mass * this.mass / rLength2);
+        if(this.newDistance){
+            force+= this.engines(other);
+        }
         //console.log(force)
         let th = Math.atan2((this.position.y - other.position.y) ,(this.position.x - other.position.x))
-        let forceVec = new THREE.Vector3(-force*Math.cos(th),-force*Math.sin(th),0);
+        let forceVec = new THREE.Vector3(force*Math.cos(th),force*Math.sin(th),0);
         return forceVec
     }
     // calculate the acceleration of the planet
@@ -53,26 +70,6 @@ class Planet extends THREE.Mesh {
         this.position.y+= this.velocity.y*deltaTime
         this.position.z =0
     }
-    // update the angle of the planet
-  
-    /*changeForce(force,deltaTime,other){
-        let th = Math.atan2((this.position.y - other.position.y) ,(this.position.x - other.position.x))
-        this.force.x += force*Math.cos(th)
-        this.force.y += force*Math.sin(th)
-        let accX= this.force.x / this.mass
-        let accY = this.force.y / this.mass
-        this.acceleration = new THREE.Vector3(accX,accY,0);
-        this.velocity.x+= this.acceleration.x*deltaTime
-        this.velocity.y+= this.acceleration.y*deltaTime
-        this.velocity.z =0
-        console.log(this.force.x)
-        this.position.x+= this.velocity.x*deltaTime
-        this.position.y+= this.velocity.y*deltaTime
-        this.position.z =0
-
-
-    }*/
-
     changeMass(mass){
         this.mass=mass;
     }

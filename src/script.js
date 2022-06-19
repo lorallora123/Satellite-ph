@@ -111,19 +111,7 @@ const parematers={
   force:0,
 
 }
-
-
-// // gui.add(sphere.position,'y',-3,3,0.01).name('cube y')
-gui.add(parematers,'masssatellite').name('mass satellite :');
-gui.add(parematers,'massplanet').name('mass planet :');
-gui.add(parematers,'distance').name('distance :');
-gui.add(parematers,'force').name('force :');
-
-
-
-
-
-/// light 
+ 
 const ambientlight = new Three.AmbientLight(0xffffff, 0.5)
 scene.add(ambientlight)
 const pointlight = new Three.PointLight(0xffffff, 0.5)
@@ -160,7 +148,7 @@ window.addEventListener('dblclick', () => {
 
 /// camera
 const camera = new Three.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 10000000)
-camera.position.z = 100000
+camera.position.z = 10500
 
 scene.add(camera)
 const controls = new OrbitControls(camera, canvas)
@@ -169,15 +157,21 @@ controls.enableDamping = true
 // planet
 const small = 1e-8;
 const earthMass = 5.98e21;
-const moonMass = 6500;
+const moonMass = 6.500;
 const dist = 7771;
 const G = 6.67e-11;
 const speed = Math.sqrt(G*earthMass/dist)
-console.log(speed)
 const planet = new Planet(1, earthMass, new Three.Vector3(0, 0, 0), new Three.Vector3(0, 0, 0));
 
 // another planet
 const planet2 = new Planet(1, moonMass, new Three.Vector3(dist, 0, 0), new Three.Vector3(0, speed,0));
+
+
+gui.add(planet2,'mass').name('mass satellite :');
+gui.add(planet,'mass').name('mass planet :');
+gui.add(planet2,'newDistance',0,1000000).name('distance :');
+//gui.add(parematers,'force','0','1000000').name('force :');
+
 
 // renderer
 const renderer = new Three.WebGLRenderer({
@@ -192,10 +186,7 @@ const tick = () => {
   //sun.rotation.y = elapsedtime
   let p1 = new Three.Vector3(plan.position.x, plan.position.y, plan.position.z);
   planet2.updatePosition(deltaTime*2,planet,parematers.force)
-  planet.changeMass(parematers.massplanet/1000);
-  planet2.changeMass(parematers.masssatellite);
-  planet2.changeRadius(parematers.distance,planet);
-  //planet2.changeForce(parematers.force,deltaTime,planet)
+  
     
   plan.position.set(planet2.position.x,planet2.position.y,planet2.position.z)
   let p2 = new Three.Vector3(plan.position.x, plan.position.y, plan.position.z);
@@ -211,7 +202,7 @@ const tick = () => {
   setTimeout(() => {
     scene.remove(line)
   }
-    , 40000);
+    , 10000);
   
 
  
